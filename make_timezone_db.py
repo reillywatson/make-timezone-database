@@ -24,7 +24,6 @@ def fetchall():
 				utcoffsetstr = utcoffsetstr[plusoffset:]
 				utcoffset = utcoffsetstr[:utcoffsetstr.index(' ')]
 			daylightsavings = (soup.find(id='tl-nds') == None)
-			descriptiontags = soup.findAll('meta')[-2]['content']
 			city = soup.h1.text.replace('Current local time in ', '').split('(')[0]
 			country = soup.find('span', 'four').parent.text.replace('Country:', '').split('(')[0]
 			print 'CITY: ' + city
