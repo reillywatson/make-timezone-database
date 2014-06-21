@@ -8,15 +8,14 @@ def fetch(url):
 def fetchall():
 	con = sqlite.connect('timezones.sqlite')
 	try:
-		for i in range(1, 2271):
+		for i in range(1, 4115):
 			if i == 1440: # this is the UTC city, which makes no sense
 				continue
 			url = 'http://www.timeanddate.com/worldclock/city.html?n=' + str(i)
 			print 'fetching: ' + url
 			html = fetch(url)
 			soup = BeautifulSoup.BeautifulSoup(html)
-			timezonetable = soup.find(id='tz1')
-			utcoffsetstr =  timezonetable.td.next.next.next
+			utcoffsetstr = soup.find(id='tl-tz-i').text
 			utcoffset = "+0"
 			plusoffset = utcoffsetstr.find('+')
 			if plusoffset == -1:
@@ -24,13 +23,10 @@ def fetchall():
 			if plusoffset > -1:
 				utcoffsetstr = utcoffsetstr[plusoffset:]
 				utcoffset = utcoffsetstr[:utcoffsetstr.index(' ')]
-			daylightsavings = True
-			daylightsavingsstr = timezonetable.td.next.next.next.next.next.next
-			if daylightsavingsstr.startswith('No'):
-				daylightsavings = False
-			descriptiontags = soup.findAll('meta')[-1]['content']
-			city = descriptiontags.split(',')[-1]
-			country = descriptiontags.split(',')[-2]
+			daylightsavings = (soup.find(id='tl-nds') == None)
+			descriptiontags = soup.findAll('meta')[-2]['content']
+			city = soup.h1.text.replace('Current local time in ', '').split('(')[0]
+			country = soup.find('span', 'four').parent.text.replace('Country:', '').split('(')[0]
 			print 'CITY: ' + city
 			print 'COUNTRY: ' + country
 			print 'UTC OFFSET: ' + str(utcoffset)
