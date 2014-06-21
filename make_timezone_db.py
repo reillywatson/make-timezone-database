@@ -15,7 +15,10 @@ def fetchall():
 			print 'fetching: ' + url
 			html = fetch(url)
 			soup = BeautifulSoup.BeautifulSoup(html)
-			utcoffsetstr = soup.find(id='tl-tz-i').text
+			offsetNode = soup.find(id='tl-tz-i')
+			if offsetNode == None:
+				continue
+			utcoffsetstr = offsetNode.text
 			utcoffset = "+0"
 			plusoffset = utcoffsetstr.find('+')
 			if plusoffset == -1:
