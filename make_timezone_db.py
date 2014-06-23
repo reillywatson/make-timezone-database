@@ -8,8 +8,11 @@ def fetch(url):
 def fetchall():
 	con = sqlite.connect('timezones.sqlite')
 	try:
-		for i in range(1, 4115):
-			if i == 1440: # this is the UTC city, which makes no sense
+		for i in range(3870, 4115):
+			ignored = [1440, 3875] # UTC, Zulu
+			ignored.extend(range(3878, 3902)) # Alpha, Beta, etc.
+			ignored.extend(range(3903, 3929)) # UTC times
+			if i in ignored:
 				continue
 			url = 'http://www.timeanddate.com/worldclock/city.html?n=' + str(i)
 			print 'fetching: ' + url
